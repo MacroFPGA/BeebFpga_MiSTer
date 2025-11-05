@@ -68,7 +68,7 @@ entity bbc_micro_core is
         IncludeCoPro6502   : boolean := true;  -- The three co pro options
         IncludeCoProSPI    : boolean := false; -- are currently mutually exclusive
         IncludeCoProExt    : boolean := false; -- (i.e. select just one)
-        IncludeVideoNuLA   : boolean := false; -- Not tested in this project
+        IncludeVideoNuLA   : boolean := true; -- Not tested in this project
         UseOrigKeyboard    : boolean := false; -- Not tested in this project
 		  UseT65Core         : boolean := true;  -- Classic 6502 (for BBC B)
 		  UseAlanDCore       : boolean := true;  -- 65C02 (for BBC Master)
@@ -2328,25 +2328,25 @@ begin
                -- vga2_b when vga2_mode = '1' else
                -- b_out;
 
-    -- map_video_nula: if IncludeVideoNuLA generate
-    -- begin
-        -- video_red   <= final_r;
-        -- video_green <= final_g;
-        -- video_blue  <= final_b;
-    -- end generate;
+    map_video_nula: if IncludeVideoNuLA generate
+    begin
+			video_red   <= r_out;
+         video_green <= g_out;
+         video_blue  <= b_out;
+    end generate;
 
-    -- map_video_orig: if not IncludeVideoNuLA generate
-    -- begin
-        -- video_red   <= (others => final_r(0));
-        -- video_green <= (others => final_g(0));
-        -- video_blue  <= (others => final_b(0));
-    -- end generate;
+    map_video_orig: if not IncludeVideoNuLA generate
+    begin
+        video_red   <= (others => r_out(0));
+        video_green <= (others => g_out(0));
+        video_blue  <= (others => b_out(0));
+    end generate;
 	
 	video_hsync <= crtc_hsync;
     video_vsync <= crtc_vsync;
-    video_red   <= (others => r_out(0));
-    video_green <= (others => g_out(0));
-    video_blue  <= (others => b_out(0));
+--    video_red   <= (others => r_out(0));
+--    video_green <= (others => g_out(0));
+--    video_blue  <= (others => b_out(0));
     video_cepix <= crtc_cepix when ttxt_active = '0' else ttxt_clken;
     video_sel   <= not ttxt_active;
 	video_hblank<= delayed_crtc_hblank2 when ttxt_active = '0' else ttxt_hblank;
